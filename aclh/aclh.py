@@ -1,11 +1,33 @@
+"""
+Copyright (C) 2018 kanishka-linux kanishka.linux@gmail.com
+
+This file is part of aclh.
+
+aclh is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+aclh is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with aclh.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 import os
 import sys
 import time
 import argparse
 from urllib.parse import urlparse
 from vinanti import Vinanti
+from log import Logging
 from bs4 import BeautifulSoup
 from functools import partial
+
+logger = Logging(__name__)
 
 class ACLH:
     
@@ -16,7 +38,11 @@ class ACLH:
             'patch', 'delete', 'options',
             'crawl'
             ]
-
+        self.parser = argparse.ArgumentParser(
+            description='Asynchronous Command-Line HTTP Client'
+            )
+        self.__add_arguments__()
+        
     def __get_page__(self, *args):
         result = args[-1]
         url = args[-2]
@@ -31,6 +57,10 @@ class ACLH:
         if result and result.html:
             soup = None
             if not no_print: 
+                print('--Headers--')
+                for key, value in result.info.items():
+                    print('{}: {}'.format(key, value))
+                print('-----------')
                 soup = BeautifulSoup(result.html, 'html.parser')
                 print(soup.prettify())
             if print_lnk:
@@ -50,64 +80,68 @@ class ACLH:
                 print('Cookie: {}'.format(result.session_cookies))
             print(vnt.tasks_count(), vnt.tasks_done(), vnt.tasks_remaining())
 
-    def start(self):
-        args = self.__add_arguments__(self.args_list)
+    def start(self, args_list=None):
+        if args_list:
+            args = self.parser.parse_args(args_list)
+        elif self.args_list:
+            args = self.parser.parse_args(self.args_list)
+        else:
+            args = self.parser.parse_args()
+        log_level = args.log_level.lower()
+        if log_level in ['info', 'debug', 'warning', 'warn', 'error']:
+            logger.set_level(log_level)
+        logger.debug(self.args_list)
         self.__process_arguments__(args)
     
-    def __add_arguments__(self, args_list):
-        parser = argparse.ArgumentParser(description='Asynchronous Command-Line HTTP Client')
-        
-        parser.add_argument('urls', metavar='URLS', type=str,
-                            nargs='+', help='list of urls')
-        parser.add_argument('--url', help='open url', required=False)
-        parser.add_argument('--proxy', help='Set Proxy', required=False)
-        parser.add_argument('--backend', help='set backend, default aiohttp',
-                            default='aiohttp', required=False)
-        parser.add_argument('--charset', help='set character set encoding, default utf-8',
-                            default='utf-8', required=False)
-        parser.add_argument('-o', '--out', help='output file', type=str, nargs='+',
-                            default=None, required=False)
-        parser.add_argument('-H', '--hdrs', help='Supply HTTP Headers', type=str,
-                            nargs='+', default='User-Agent:Mozilla/5.0',
-                            required=False)
-        parser.add_argument('-d', '--data', help='Add Data fields', type=str,
-                            nargs='+', default=None, required=False)
-        parser.add_argument('-f', '--files', help='Add files in POST body', type=str,
-                            nargs='+', default=None, required=False)
-        parser.add_argument('-X', '--method', help='Type of HTTP request', type=str,
-                            default='GET', required=False)
-        parser.add_argument('--depth-allowed', help='Set crawling depth. Default 1',
-                            type=int, default=1, required=False)
-        parser.add_argument('--wait', help='Add wait duration between requests',
-                            type=float, default=0.5, required=False)
-        parser.add_argument('--timeout', help='Timeout in Seconds',
-                            default=None, required=False)
-        parser.add_argument('--max-requests', help='Max concurrent requests. Default 10',
-                            type=int, default=10, required=False)
-        parser.add_argument('--no-print', help='do not print output in terminal',
-                            dest='no_print', default=False, required=False,
-                            action='store_true')
-        parser.add_argument('--print-links', help='print links in terminal',
-                            default=False, required=False, action='store_true')
-        parser.add_argument('-c', '--continue', help='Resume download', required=False,
-                            default=False, dest='resume_download', action='store_true')
-        parser.add_argument('--cookie-unsafe', help='Accept cookies from IP addresses',
-                            required=False, default=False, action='store_true')
-        parser.add_argument('--binary', help='binary output', required=False,
-                            default=False, action='store_true')
-        parser.add_argument('--accept-cookies', help='accept session cookies. True/False. Default True',
-                            required=False, default=True, action='store_true')
-        parser.add_argument('--print-cookies', help='show session cookies.',
-                            required=False, default=False, action='store_true')
-        parser.add_argument('--verify', help='ssl certificate verification',
-                            required=False, default=True, action='store_true')
-        parser.add_argument('-u', '--user', help='HTTP Basic Auth. user:passwd',
-                            required=False, default=None)
-        if args_list is None:
-            args = parser.parse_args()
-        else:
-            args = parser.parse_args(args_list)
-        return args
+    def __add_arguments__(self):
+        self.parser.add_argument('urls', metavar='URLS', type=str,
+                                 nargs='+', help='list of urls')
+        self.parser.add_argument('--url', help='open url', required=False)
+        self.parser.add_argument('--proxy', help='Set Proxy', required=False)
+        self.parser.add_argument('--backend', help='set backend, default aiohttp',
+                                 default='aiohttp', required=False)
+        self.parser.add_argument('--charset', help='set character set encoding, default utf-8',
+                                 default='utf-8', required=False)
+        self.parser.add_argument('--log-level', help='set log level', type=str,
+                                 default='error', required=False)
+        self.parser.add_argument('-o', '--out', help='output file', type=str, nargs='+',
+                                 default=None, required=False)
+        self.parser.add_argument('-H', '--hdrs', help='Supply HTTP Headers', type=str,
+                                 nargs='+', default='User-Agent:Mozilla/5.0',
+                                 required=False)
+        self.parser.add_argument('-d', '--data', help='Add Data fields', type=str,
+                                 nargs='+', default=None, required=False)
+        self.parser.add_argument('-f', '--files', help='Add files in POST body', type=str,
+                                 nargs='+', default=None, required=False)
+        self.parser.add_argument('-X', '--method', help='Type of HTTP request', type=str,
+                                 default='GET', required=False)
+        self.parser.add_argument('--depth-allowed', help='Set crawling depth. Default 1',
+                                 type=int, default=1, required=False)
+        self.parser.add_argument('--wait', help='Add wait duration between requests',
+                                 type=float, default=0.5, required=False)
+        self.parser.add_argument('--timeout', help='Timeout in Seconds',
+                                 default=None, required=False)
+        self.parser.add_argument('--max-requests', help='Max concurrent requests. Default 10',
+                                 type=int, default=10, required=False)
+        self.parser.add_argument('--no-print', help='do not print output in terminal',
+                                 dest='no_print', default=False, required=False,
+                                 action='store_true')
+        self.parser.add_argument('--print-links', help='print links in terminal',
+                                 default=False, required=False, action='store_true')
+        self.parser.add_argument('-c', '--continue', help='Resume download', required=False,
+                                 default=False, dest='resume_download', action='store_true')
+        self.parser.add_argument('--cookie-unsafe', help='Accept cookies from IP addresses',
+                                 required=False, default=False, action='store_true')
+        self.parser.add_argument('--binary', help='binary output', required=False,
+                                 default=False, action='store_true')
+        self.parser.add_argument('--accept-cookies', help='accept session cookies. True/False. Default True',
+                                 required=False, default=True, action='store_true')
+        self.parser.add_argument('--print-cookies', help='show session cookies.',
+                                 required=False, default=False, action='store_true')
+        self.parser.add_argument('--verify', help='ssl certificate verification',
+                                 required=False, default=True, action='store_true')
+        self.parser.add_argument('-u', '--user', help='HTTP Basic Auth. user:passwd',
+                                 required=False, default=None)
     
     def __process_arguments__(self, args):
         hdrs = args.hdrs
@@ -155,12 +189,14 @@ class ACLH:
             proxies = {proxy_type:args.proxy}
         else:
             proxies = None
+            
         vnt = Vinanti(block=False, backend=args.backend, hdrs=hdrs_dict, wait=wait,
                       max_requests=max_requests, continue_out=continue_out,
                       verify=args.verify, auth=auth_tuple, data=data_tuple,
                       cookie_unsafe=args.cookie_unsafe, charset=args.charset,
                       timeout=args.timeout, proxies=proxies, files=files_data,
                       session=args.accept_cookies)
+                      
         method = args.method.lower()
         
         if method in self.method_list:
