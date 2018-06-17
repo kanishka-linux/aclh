@@ -103,4 +103,6 @@ If users want to fire just one request at a time from cli then there is no need 
 
 Using [Vinanti](https://github.com/kanishka-linux/vinanti) and [aiohttp](https://github.com/aio-libs/aiohttp). All the heavy lifting is done by these two libraries. **aclh** provides cli wrapper around them.
 
-Note: aclh is a beta level software.
+## Note: 
+
+Currently aclh is a beta level software.
