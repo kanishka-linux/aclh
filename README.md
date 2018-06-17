@@ -18,7 +18,7 @@
 
 + Allows adjusting time duration between successive requests to same domain.
 
-+ Builtin light-weight crawler
++ Builtin lightweight crawler
 
 ## Why to use aclh?
 
@@ -91,9 +91,9 @@ If users want to fire just one request at a time from cli then there is no need 
 
         $ aclh https://en.wikipedia.org https://www.python.org/ --hdrs 'User-Agent:Mozilla/5.0' 'Cookie: custom_cookie'
         
-7. Crawl website
+7. Crawl website asynchronously and keep time duration of 1s between successive requests
 
-        $ aclh -X CRAWL 'https://docs.python.org/3/' --depth-allowed=1
+        $ aclh -X CRAWL 'https://docs.python.org/3/' --depth-allowed=1 wait=1.0
         
 8. help
 
