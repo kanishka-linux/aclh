@@ -29,5 +29,6 @@ sys.path.append(BASEDIR)
 
 from vinanti.vinanti import Vinanti
 from aclh.aclh import ACLH
+from aclh.log import Logging
 
 __version__ = '0.1'
