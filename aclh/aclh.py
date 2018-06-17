@@ -93,8 +93,9 @@ class ACLH:
             logger.set_level(log_level)
         logger.debug(self.args_list)
         hdrs_dict, auth_tuple, data_tuple, files_data, proxies, args = self.__process_arguments__(args)
-        self.__prepare_request__(hdrs_dict, auth_tuple, data_tuple,
-                                 files_data, proxies, args)
+        self.__prepare_request__(hdrs_dict, auth_tuple,
+                                 data_tuple, files_data,
+                                 proxies, args)
         
     def __add_arguments__(self):
         self.parser.add_argument('urls', metavar='URLS', type=str,
@@ -118,7 +119,6 @@ class ACLH:
                                  nargs='+', default=None, required=False)
         self.parser.add_argument('-f', '--files', help='Add files in POST body', type=str,
                                  nargs='+', default=None, required=False)
-        
         self.parser.add_argument('-X', '--method', help='Type of HTTP request', type=str,
                                  default='GET', required=False)
         self.parser.add_argument('--depth-allowed', help='Set crawling depth. Default 1',
@@ -179,7 +179,7 @@ class ACLH:
             for i in args.files:
                 if '@' in i:
                     file_title, file_name = i.split('@')
-                    files_dict.update({file_title, file_name})
+                    files_dict.update({file_title:file_name})
                 else:
                     files_list.append(i)
             if files_dict:
@@ -192,10 +192,12 @@ class ACLH:
             proxies = {proxy_type:args.proxy}
         else:
             proxies = None
+        logger.debug(data_tuple, files_data)
         return hdrs_dict, auth_tuple, data_tuple, files_data, proxies, args
         
-    def __prepare_request__(self, hdrs_dict, auth_tuple, data_tuple,
-                            files_data, proxies, args):
+    def __prepare_request__(self, hdrs_dict, auth_tuple,
+                            data_tuple, files_data, proxies,
+                            args):
                                 
         vnt = Vinanti(block=False, backend=args.backend, hdrs=hdrs_dict,
                       wait=args.wait, max_requests=args.max_requests,
@@ -206,10 +208,10 @@ class ACLH:
                       
         if args.input_files:
             self.__process_files_urls__(vnt, args)
-            
         else:
-            self.__final_request__(vnt, hdrs_dict, auth_tuple, data_tuple,
-                                   files_data, proxies, args)
+            self.__final_request__(vnt, hdrs_dict, auth_tuple,
+                                   data_tuple, files_data, proxies,
+                                   args)
     
     def __process_files_urls__(self, vnt, args):
         for fl in args.input_files:
@@ -226,11 +228,13 @@ class ACLH:
                         if line:
                             nargs = self.parser.parse_args(line.split())
                             hdrs_d, auth_t, data_t, files_d, prox, nargs = self.__process_arguments__(nargs)
-                            self.__final_request__(vnt, hdrs_d, auth_t, data_t,
-                                                   files_d, prox, nargs)
+                            self.__final_request__(vnt, hdrs_d, auth_t,
+                                                   data_t, files_d, prox,
+                                                   nargs)
     
-    def __final_request__(self, vnt, hdrs_dict, auth_tuple, data_tuple,
-                          files_data, proxies, args):
+    def __final_request__(self, vnt, hdrs_dict, auth_tuple,
+                          data_tuple, files_data, proxies,
+                          args):
         method = args.method.lower()
         
         if method in self.method_list:
