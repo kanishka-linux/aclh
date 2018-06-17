@@ -54,13 +54,14 @@ class ACLH:
         cookies = args[4]
         sys.stdout.write('\r')
         sys.stdout.flush()
+        if not no_print and result and result.info:
+            print('--Headers--')
+            for key, value in result.info.items():
+                print('{}: {}'.format(key, value))
+            print('-----------')
         if result and result.html:
             soup = None
             if not no_print: 
-                print('--Headers--')
-                for key, value in result.info.items():
-                    print('{}: {}'.format(key, value))
-                print('-----------')
                 soup = BeautifulSoup(result.html, 'html.parser')
                 print(soup.prettify())
             if print_lnk:
