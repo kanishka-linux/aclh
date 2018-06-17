@@ -14,15 +14,15 @@
 
 + Formats HTML ouput, in order to make reading easier inside terminal (Thanks to bs4).
 
-+ Allow adjusting total number of concurrent requests.
++ Allows adjusting total number of concurrent requests.
 
-+ Allow adjusting time duration between successive requests to same domain.
++ Allows adjusting time duration between successive requests to same domain.
 
 + Builtin light-weight crawler
 
 ## Why to use aclh?
 
-If users want to fire just one request at a time from cli then there is no need to use aclh, since existing clients like curl or wget are sufficient for this. But, if users are interested in firing 100+ or more concurrent requests asynchronously without creating 100+ or more separate processes, then they might find **aclh** useful.
+If users want to fire just one request at a time from cli then there is no need to use **aclh**, since existing clients like curl or wget are sufficient for this. But, if users are interested in firing 100+ or more concurrent requests asynchronously without creating 100+ or more separate processes, then they might find **aclh** useful.
 
 
 ## Dependencies and Installation
