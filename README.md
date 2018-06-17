@@ -93,7 +93,7 @@ If users want to fire just one request at a time from cli then there is no need 
         
 7. Crawl website asynchronously and keep time duration of 1s between successive requests
 
-        $ aclh -X CRAWL 'https://docs.python.org/3/' --depth-allowed=1 wait=1.0
+        $ aclh -X CRAWL 'https://docs.python.org/3/' --depth-allowed=1 --wait=1.0
         
 8. help
 
