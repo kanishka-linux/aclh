@@ -87,7 +87,7 @@ If users want to fire just one request at a time from cli then there is no need 
 
         $ aclh --input-files file1.txt file2.txt
         
-6. Send common Custom header with both urls
+6. Send common Custom header when fetching two urls
 
         $ aclh https://en.wikipedia.org https://www.python.org/ --hdrs 'User-Agent:Mozilla/5.0' 'Cookie: custom_cookie'
         
