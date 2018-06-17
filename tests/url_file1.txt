@@ -1,0 +1,5 @@
+https://mr.wikipedia.org --print-cookies --no-print
+https://en.wikipedia.org --no-print
+https://ja.wikipedia.org --no-print --print-cookies
+
+

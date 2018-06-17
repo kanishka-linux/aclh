@@ -1,0 +1,3 @@
+https://www.google.co.in --no-print
+https://news.ycombinator.com/news --print-links --no-print --print-cookies
+https://news.ycombinator.com/show --no-print --print-cookies
