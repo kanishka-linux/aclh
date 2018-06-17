@@ -14,11 +14,11 @@
 
 + Formats HTML ouput, in order to make reading easier inside terminal (Thanks to bs4).
 
-+ Adjust total number of concurrent requests.
++ Allow adjusting total number of concurrent requests.
 
-+ Adjust time duration between successive requests to same domain.
++ Allow adjusting time duration between successive requests to same domain.
 
-+ Builtin crawler
++ Builtin light-weight crawler
 
 ## Why to use aclh?
 
@@ -83,7 +83,7 @@ If users want to fire just one request at a time from cli then there is no need 
 
         $ aclh https://en.wikipedia.org https://mr.wikipedia.org --no-print --print-cookies --print-links
         
-5. Fetch urls and with options from files
+5. Fetch urls with options from files
 
         $ aclh --input-files file1.txt file2.txt
         
