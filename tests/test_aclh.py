@@ -24,19 +24,49 @@ from functools import partial
 
 
 class TestAclh(unittest.TestCase):
-    
-    cmd = [
-        'http://www.google.com',
-        'http://www.duckduckgo.com',
-        'http://en.wikipedia.org',
-        '--hdrs', 'User-Agent:Mozilla/5.0'
-        ]
+        
+    hdr = 'User-Agent:Mozilla/5.0'
     
     def test_log_level(self):
-        cmd = self.cmd + ['--no-print', '--log-level=debug']
+        cmd = [
+            'http://www.google.com',
+            'http://www.duckduckgo.com',
+            'http://en.wikipedia.org',
+            '--hdrs', self.hdr,
+            '--no-print', '--log-level=debug'
+        ]
+        aclh = ACLH(cmd)
+        aclh.start()
+    
+    def test_save(self):
+        cmd = [
+            'https://en.wikipedia.org', 'https://news.ycombinator.com/news',
+            '--out', '/tmp/en.html', '/tmp/yc.html', '--no-print',
+            '--hdrs', self.hdr,
+            '--log-level=debug'
+            ]
+        aclh = ACLH(cmd)
+        aclh.start()
+    
+    def test_basic_auth(self):
+        cmd = [
+            'https://httpbin.org/basic-auth/user-basic/password-basic',
+            '--user', 'user-basic:password-basic',
+            '--hdrs', self.hdr,
+            '--log-level=debug'
+            ]
         aclh = ACLH(cmd)
         aclh.start()
         
+    def test_head(self):
+        cmd = [
+            'https://www.duckduckgo.com',
+            '--hdrs', self.hdr,
+            '--log-level=debug',
+            '-X', 'HEAD'
+            ]
+        aclh = ACLH(cmd)
+        aclh.start()
         
 if __name__ == '__main__':
     BASEDIR, BASEFILE = os.path.split(os.path.abspath(__file__))
