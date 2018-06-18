@@ -10,15 +10,17 @@
 
 + Ability to resume partial downloads.
 
-+ Ability to read urls with parameters from files.
++ Ability to accept input from files containing urls with custom parameters.
 
-+ Formats HTML ouput, in order to make reading easier inside terminal (Thanks to bs4).
++ Automatic HTML Formatting, in order to make reading of HTML content easier inside terminal (Thanks to bs4).
 
-+ Allows adjusting total number of concurrent requests.
++ Allows adjusting maximum number of concurrent requests.
 
 + Allows adjusting time duration between successive requests to same domain.
 
-+ Builtin lightweight crawler
++ Supports two backends urllib and aiohttp for fetching urls. 
+
++ Built-in lightweight crawler
 
 ## Why to use aclh?
 
