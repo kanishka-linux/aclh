@@ -76,10 +76,17 @@ class CrawlObject:
             if soup.title:
                 url_obj.title = soup.title
             if self.depth_allowed > depth or self.depth_allowed <= 0:
-                link_list = [soup.find_all('a'), soup.find_all('link')]
+                link_list = [
+                    soup.find_all('a'), soup.find_all('link'),
+                    soup.find_all('img')
+                    ]
                 for links in link_list:
                     for link in links:
-                        lnk = link.get('href')
+                        if link.name == 'img':
+                            lnk = link.get('src')
+                        else:
+                            lnk = link.get('href')
+                        
                         if not lnk or lnk == '#':
                             continue
                         lnk = self.construct_link(ourl, scheme, netloc,
