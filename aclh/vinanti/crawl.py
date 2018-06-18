@@ -85,9 +85,10 @@ class CrawlObject:
                         lnk = self.construct_link(ourl, scheme, netloc,
                                                   url, base_url, lnk)
                         if lnk:
-                            self.crawl_next_link(lnk, session, base_url, depth)
+                            self.crawl_next_link(lnk, session, base_url,
+                                                 depth, result.out_dir)
                     
-    def crawl_next_link(self, lnk, session, base_url, depth):
+    def crawl_next_link(self, lnk, session, base_url, depth, out_dir):
         n = urllib.parse.urlparse(lnk)
         crawl_allow = False
         if len(self.domains_allowed) > 1:
@@ -100,7 +101,8 @@ class CrawlObject:
                 self.vnt.crawl(lnk, depth=depth+1, session=session,
                                method='CRAWL_CHILDREN',
                                crawl_object=self,
-                               onfinished=self.onfinished)
+                               onfinished=self.onfinished,
+                               out=out_dir)
         
     def construct_link(self, ourl, scheme,
                        netloc, url, base_url,
