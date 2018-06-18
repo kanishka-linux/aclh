@@ -126,7 +126,6 @@ class RequestObjectAiohttp(RequestObject):
             for file_name in self.files:
                 content_type = self.get_content_type(file_name)
                 filename = os.path.basename(file_name)
-                print(file_name, filename, content_type)
                 self.data.add_field(filename, open(file_name, 'rb'),
                                     content_type=content_type)
         elif isinstance(self.files, dict):
