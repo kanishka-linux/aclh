@@ -104,7 +104,7 @@ class ACLH:
         self.parser.add_argument('-i', '--input-files', help='Add urls from files', type=str,
                                  nargs='+', default=None, required=False)
         self.parser.add_argument('--proxy', help='Set Proxy', required=False)
-        self.parser.add_argument('--backend', help='set backend, default aiohttp',
+        self.parser.add_argument('--backend', help='set backend, default aiohttp. Available: urllib/aiohttp',
                                  default='aiohttp', required=False)
         self.parser.add_argument('--charset', help='set character set encoding, default utf-8',
                                  default='utf-8', required=False)
@@ -112,15 +112,17 @@ class ACLH:
                                  default='error', required=False)
         self.parser.add_argument('-o', '--out', help='output file', type=str, nargs='+',
                                  default=None, required=False)
-        self.parser.add_argument('-H', '--hdrs', help='Supply HTTP Headers', type=str,
+        self.parser.add_argument('-H', '--hdrs', help='Supply HTTP Headers. Format: "key:value"', type=str,
                                  nargs='+', default='User-Agent:Mozilla/5.0',
                                  required=False)
-        self.parser.add_argument('-d', '--data', help='Add Data fields', type=str,
+        self.parser.add_argument('-d', '--data', help='Add Data fields. Format: "key:value"', type=str,
                                  nargs='+', default=None, required=False)
         self.parser.add_argument('-f', '--files', help='Add files in POST body', type=str,
                                  nargs='+', default=None, required=False)
-        self.parser.add_argument('-X', '--method', help='Type of HTTP request', type=str,
-                                 default='GET', required=False)
+        self.parser.add_argument(
+            '-X', '--method', default='GET', required=False, type=str,
+            help='GET/POST/HEAD/PATCH/PUT/DELETE/OPTIONS/CRAWL'
+            )
         self.parser.add_argument('--depth-allowed', help='Set crawling depth. Default 1',
                                  type=int, default=1, required=False)
         self.parser.add_argument('--wait', help='Add wait duration between requests',
@@ -141,7 +143,7 @@ class ACLH:
         self.parser.add_argument('--binary', help='binary output', required=False,
                                  default=False, action='store_true')
         self.parser.add_argument('--accept-cookies', help='accept session cookies. True/False. Default True',
-                                 required=False, default=True, action='store_true')
+                                 required=False, default=True, type=bool)
         self.parser.add_argument('--print-cookies', help='show session cookies.',
                                  required=False, default=False, action='store_true')
         self.parser.add_argument('--no-verify', help='do not verify ssl certificate',
