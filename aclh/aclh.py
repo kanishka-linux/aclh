@@ -144,8 +144,8 @@ class ACLH:
                                  required=False, default=True, action='store_true')
         self.parser.add_argument('--print-cookies', help='show session cookies.',
                                  required=False, default=False, action='store_true')
-        self.parser.add_argument('--verify', help='ssl certificate verification',
-                                 required=False, default=True, action='store_true')
+        self.parser.add_argument('--no-verify', help='do not verify ssl certificate',
+                                 required=False, default=False, action='store_true')
         self.parser.add_argument('-u', '--user', help='HTTP Basic Auth. user:passwd',
                                  required=False, default=None)
     
@@ -198,10 +198,14 @@ class ACLH:
     def __prepare_request__(self, hdrs_dict, auth_tuple,
                             data_tuple, files_data, proxies,
                             args):
-                                
+        if args.no_verify:
+            verify = False
+        else:
+            verify = True
+        logger.debug('verify={}; cookie-unsafe={}'.format(verify, args.cookie_unsafe))
         vnt = Vinanti(block=False, backend=args.backend, hdrs=hdrs_dict,
                       wait=args.wait, max_requests=args.max_requests,
-                      continue_out=args.resume_download, verify=args.verify,
+                      continue_out=args.resume_download, verify=verify,
                       auth=auth_tuple, data=data_tuple, cookie_unsafe=args.cookie_unsafe,
                       charset=args.charset, timeout=args.timeout, proxies=proxies,
                       files=files_data, session=args.accept_cookies)
@@ -247,6 +251,10 @@ class ACLH:
         callback = partial(self.__get_page__, args.no_print,
                            args.print_links, ytm, vnt,
                            args.print_cookies)
+        if args.no_verify:
+            verify = False
+        else:
+            verify = True
         if args.out:
             out_list = []
             if len(args.out) == len(args.urls):
@@ -258,11 +266,11 @@ class ACLH:
                     out_list = [args.out[0] for i in args.urls]
             for url in zip(args.urls, out_list):
                 func(url[0], onfinished=callback, out=url[1],
-                     depth_allowed=depth_allowed, verify=args.verify,
+                     depth_allowed=depth_allowed, verify=verify,
                      auth=auth_tuple, data=data_tuple, charset=args.charset,
                      timeout=args.timeout, files=files_data)
         else:
             func(args.urls, onfinished=callback, out=args.out,
-                 depth_allowed=depth_allowed, verify=args.verify,
+                 depth_allowed=depth_allowed, verify=verify,
                  auth=auth_tuple, data=data_tuple, charset=args.charset,
                  timeout=args.timeout, files=files_data)
