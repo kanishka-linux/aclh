@@ -30,12 +30,14 @@ class TestAclh(unittest.TestCase):
     path = os.getcwd()
     file1 = os.path.join(path, 'url_file1.txt')
     file2 = os.path.join(path, 'url_file2.txt')
+    backend = 'aiohttp'
     
     def test_post_simple(self):
         cmd = [
-            'http://httpbin.org/post',
-            '--data', 'moe:curly',
-            '--hdrs', self.hdr,
+            'http://httpbin.org/post', 
+            '--backend={}'.format(self.backend),
+            '--data', 'linkin park:hybrid theory',
+            '--hdrs', self.hdr, 
             '-X', 'POST',
             '--log-level=debug'
             ]
@@ -45,6 +47,7 @@ class TestAclh(unittest.TestCase):
     def test_post_complex(self):
         cmd = [
             'http://httpbin.org/post',
+            '--backend={}'.format(self.backend),
             '--data', 'moe:curly', 'moe:larry',
             '--hdrs', self.hdr,
             '-X', 'POST',
@@ -56,6 +59,7 @@ class TestAclh(unittest.TestCase):
     def test_post_file_and_data(self):
         cmd = [
             'http://httpbin.org/post',
+            '--backend={}'.format(self.backend),
             '--data', 'moe:curly', 'moe:larry',
             '--files', self.file1, self.file2,
             '--hdrs', self.hdr,
@@ -68,6 +72,7 @@ class TestAclh(unittest.TestCase):
     def test_custom_file_name(self):
         cmd = [
             'http://httpbin.org/post',
+            '--backend={}'.format(self.backend),
             '--data', 'moe:curly', 'moe:larry',
             '--files', 'file_1.txt@'+self.file1, 'file_2.txt@'+self.file2,
             '--hdrs', self.hdr,
