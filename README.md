@@ -1,6 +1,6 @@
 # aclh
 
-**A**synchronous **C**ommand-**l**ine **H**TTP Client
+**A**sync **C**ommand-**l**ine **H**TTP Client
 
 ## Features
 
